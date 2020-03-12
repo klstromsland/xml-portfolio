@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="gcc.xsl"?>
+<article>
+	<image src="GCC.png"></image>
+	<title>Learning About the GCC, Makefiles, Bash Scripts C++ Programming and Linux</title>
+	<par1>I have just made a foray into using the GCC compiler with </par1><link1>Ubuntu 18.04.3</link1><par11> on </par11><link11>Windows Subsystem for Linux</link11><par12> with the </par12><link12>Visual Studio Code</link12><par13> IDE so that I could compile fairly simple C/C++ programs while building C/C++ skills. I would like to walk you through my experience and look forward to corrections, questions and advice on next steps.</par13>
+	<subtitle2>Setting Out</subtitle2>
+	<par2>To use GCC in an open source Linux environment you need a working </par2><link2>GNU toolchain installation</link2><par21> that includes GNU make, the </par21><link21>GNU Compiler Collection (GCC)</link21><par22>, GNU C Library, GNU Debugger (GDB) and the GNU build systems.</par22><par23>Follow the </par23><link22>Microsoft documentation</link22><par24> or other platform documentation to make sure the toolchain is updated and that GCC and GDB are installed.</par24> <par25>Use </par25>
+	<par26>whereis</par26><par27> command to find GCC and GDB to make sure they are installed.</par27>
+	<code21>:~$ whereis gcc</code21>
+	<code22>:~$ whereis gdb</code22>
+	<subtitle3>GCC</subtitle3>
+	<par31>The GCC documentation can be found </par31><link3>here</link3><par32>. It is quite daunting though you will learn that g++ is a program that </par32><link31>calls GCC and automatically specifies linking against the C++ library</link31><par33>. I found that comforting in some way.</par33>  <par34>To narrow the scope of using GCC, you will find a nice compilation of basic GCC syntax at computerhope.com, </par34><link32>cc command and options</link32><par35>, as shown in an abbreviated version below. The list starts with the first four most commonly used options.</par35>
+	<command>
+		<cl>-c</cl>
+		<desc>Just compile the code; no linking</desc>
+	</command>
+	<command>
+		<cl>-Wall</cl>
+		<desc>Enable 'all' warnings; good to use</desc>
+	</command>
+	<command>
+		<cl>-g</cl>
+		<desc>Create debugger version</desc>
+	</command>
+	<command>
+		<cl>-o filename</cl>
+		<desc>The output filename which defaults to a.out</desc>
+	</command>
+	<command>
+		<cl>-ansi</cl>
+		<desc>Disable most of the non-ANSI compliant features provided by cc</desc>
+	</command>
+	<command>
+		<cl>-D name[=value]</cl>
+		<desc>Defines a macro at compile time</desc>
+	</command>
+	<command>
+		<cl>-I dir</cl>
+		<desc>Search dir for included files</desc>
+	</command>
+	<command>
+		<cl>-L dir</cl>
+		<desc>Add dir to the list of directories where the compiler will look for linked libraries</desc>
+	</command>
+	<command>
+		<cl>-l library</cl>
+		<desc>If linking, adds library to list of libraries to be linked</desc>
+	</command>
+	<command>
+		<cl>-M</cl>
+		<desc>If linking, creates a map file of symbols and their addresses</desc>
+	</command>
+	<command>
+		<cl>-m model</cl>
+		<desc>Specifies memory model</desc>
+	</command>
+	<command>
+		<cl>-U name</cl>
+		<desc>'Undefine' any previously defined macros</desc>
+	</command>
+	<par36>There are also many environment variables you can use and define. See </par36><link33>cc command and options</link33><par37>.</par37>
+	<par38>You can compile from your terminal!</par38>
+	<par39>g++ invokes GCC.</par39>
+	<par311>My example</par311>
+	<code31>:~$ g++ -g -Wall -c print_triangle.cpp main.cpp</code31>
+	<code32>:~$ g++ -g -Wall -o a.out $main.o $PWD/print_triangle.cpp.o</code32>
+	<par312>Great! But you may want to add some automation and place output files in a separate directory.</par312>	
+	<subtitle4>Makefiles</subtitle4>
+	<par41>This is my first working experiment with using </par41><link4>Makefiles</link4><par42>.</par42>
+	<code41>a.out : main.o print_triangle.o</code41>
+	<code42>    g++ -g -Wall -o a.out main.o print_triangle.o</code42>
+	<code43>main.o : main.cpp print_triangle.h</code43>
+	<code44>    g++ -g -Wall -c main.cpp print_triangle.h</code44>
+	<code45>print_triangle.o : print_triangle.cpp print_triangle.h</code45>
+	<code46>		g++ -g -Wall -c print_triangle.cpp print_triangle.h</code46>
+	<code47>clean : rm main.o print_triangle.o</code47>
+	<code48>:~$ make</code48>
+	<par43>Runs great from the terminal! You may try to use this with WSL Visual Studio Code JSON tasks and you may run into problems with sequencing the build task with some file management tasks as I did. I was experimenting using an output directory /bin and moving output files there. I could not figure out how to sequence the tasks so I turned to bash scripts to run builds that allowed me to do some file management. If you have success with Makefiles, simple file management tasks and WSL Visual Studio Code JSON tasks, I would like to hear from you.</par43>
+	<subtitle5>Bash</subtitle5>
+	<par5>After experimenting with using </par5><link5>bash files</link5><par51>, the following is what works for me, for now. It allows me to move output files to /bin and remove them from /bin in sequence. I do run it through a JSON task using Visual Studio Code but I could also run it from the terminal.</par51>
+	<code51>#!/bin/bash</code51>
+	<code52>for file in $OLDFILES</code52>
+	<code53>do</code53>
+	<code54>     rm $PWD/BIN/$(basename $file)</code54>
+	<code55>     echo $(basename $file) removed</code55>
+	<code56>done</code56>
+	<code57>g++ -g -Wall -c $PWD/print_triangle.cpp main.cpp</code57>
+	<code58>echo "print_triangle and main compile complete"</code58>
+	<code59>g++ -g -Wall -o a.out $PWD/main.o $PWD/print_triangle.o</code59>
+	<code511>echo "a.out compile complete"</code511>
+	<code512>NEWFILES=$PWD/*.o*</code512>
+	<code513>for file in $NEWFILES</code513>
+	<code514>do</code514>
+	<code515>     mv $PWD/$(basename $file) $PWD/bin/$(basename $file)</code515>
+	<code516>     echo $(basename $file) moved</code516>
+	<code517>done</code517>
+	<code518>echo "output files moved to bin\n"</code518>
+	<code519>./bin/a.out</code519>
+	<code521>exit</code521>
+	<code522>:~$ bash bashbuild</code522>
+	<par52>Visual Studio Code JSON Task</par52>
+	<code523>.vscode {} tasks.json > [ ] tasks > 0</code523>
+	<code524>{</code524>
+	<code525>     // See https://go.microsoft.com/fwlink/$linkId=733558</code525>
+	<code526>     // for the documentation about the tasks.json format</code526>
+	<code527>     "version": "2.0.0"</code527>
+	<code528>     "tasks":[</code528>
+	<code529>          {</code529>
+	<code531>               "type": "shell",</code531>
+	<code532>               "label": "bash g++ build",</code532>
+	<code533>               "command": "bash bashbuild",</code533>
+	<code534>               "problemMatcher": [ ]</code534>
+	<code535>          }</code535>
+	<code536>      ]</code536>
+	<code537>}</code537>
+	<subtitle6>Conclusions</subtitle6>
+	<par6>I have decided I will continue using bash scripts for compiling g++ within the WSL Ubuntu Visual Studio Code environment until I learn about better ways of doing fairly simple compiles.</par6>
+	<subtitle7>Resources</subtitle7>
+	<ref1>GCC Compiler Manual</ref1>
+	<ref2>Simple Makefile</ref2>
+	<ref3>Makefile Options</ref3>
+	<ref4>Summary of Makefile Options</ref4>
+	<ref5>Building your C++ application with Visual Studio Code</ref5>
+	<ref6>Using C++ and WSL in Visual Studio Code</ref6>
+	<ref7>Visual Studio Code and Tasks</ref7>
+	<ref8>Linux Commands</ref8>
+	<ref9>Easy C++ projects</ref9>
+	<par7> is a Visual Studio Code extension that builds a full project directory structure and integrated build tasks.</par7>
+</article>
