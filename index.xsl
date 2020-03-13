@@ -75,9 +75,9 @@
 	  }
 	</STYLE>
 	<STYLE>
-		body {margin:0;padding:0;max-width:100%;min-width:100%;min-height:100%;display:flex;align-items:stretch;}
+		div {margin:0;padding:0;max-width:100%;min-width:100%;min-height:100%;display:flex;align-items:stretch;}
 	</STYLE>
-	<body>
+	<div>
 	<STYLE>	
 		.container-left {flex-direction:row;min-width:12%;}
 		.container-right {flex-direction:row;min-width:12%;}
@@ -253,7 +253,7 @@
 		</section>
 		<section class="container-right">
 		</section>
-	</body>
+	</div>
 	</html>
 </xsl:template>
 
