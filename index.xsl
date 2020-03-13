@@ -81,6 +81,11 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 		body {margin:0;padding:0;max-width:100%;min-width:100%;min-height:100%;display:flex;align-items:stretch;}
 	</STYLE>
 	<body>
+	<script>
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open("GET", "index.xml", true);
+		xmlhttp.send();
+	 </script>
 	<STYLE>	
 		.container-left {flex-direction:row;min-width:12%;}
 		.container-right {flex-direction:row;min-width:12%;}
