@@ -5,6 +5,13 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:preserve-space elements="code42 code44"/>
 <xsl:template match="/">
 	<html>
+	<script>
+	function loadXMLDoc() {
+  		var xmlhttp = new XMLHttpRequest();
+  		xmlhttp.open("GET", "gcc.xml", true);
+  		xmlhttp.send();
+	}
+	</script>
 	<STYLE>
 		@media screen and (min-width:800px){
 		 p {
