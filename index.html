@@ -40,9 +40,87 @@ else if (document.implementation && document.implementation.createDocument)
 </script>
 </head>
 <STYLE>
+	@media screen and (min-width:800px){
+		 p {
+			font-size: 16ep;
+		 }
+		 h1 {
+			font-size: 20ep;
+		 }
+		 h2 {
+			font-size: 18ep;
+		 }		 
+		 .container-left {
+			flex-direction:row;
+			min-width:20%;
+		 }
+		 .container-right {
+		   flex-direction:row;
+			min-width:20%;
+		 }
+		 .container-center {
+		   flex-direction:row;
+		 }
+		 code {
+			font-size:18ep;
+		 }
+	  }
+	@media screen and (min-width:500px) and (max-width:799px){
+	 p {
+		font-size: 16ep;
+	 h1 {
+		font-size: 20ep;
+	 }
+	 h2 {
+		font-size: 18ep;
+	 }	
+	 .container-left {
+		flex-direction:row;min-width:5%;
+	 }
+	 .container-right {
+	   flex-direction:row;min-width:5%;
+	 }
+	 .container-center {
+	   flex-direction:row;min-width:90%;
+	 }
+	 code {
+		font-size:18ep;
+	 }
+	}
+	@media screen and (min-width:0) and (max-width:499){
+	 p {
+		font-size: 16ep;
+	 }
+	 h1 {
+		font-size: 20ep;
+	 }
+	 h2 {
+		font-size: 18ep;
+	 }	
+	 .container-left {
+		flex-direction:row;min-width:5%;
+	 }
+	 .container-right {
+	   flex-direction:row;min-width:5%;
+	 }
+	 .container-center {
+	   flex-direction:row;min-width:90%;
+	 }
+	 code {
+		font-size:18ep;
+	 }
+	}
 	body {margin:0;padding:0;max-width:100%;min-width:100%;min-height:100%;display:flex;align-items:stretch;}
 </STYLE>
 <body onload="displayResult()">
+	.container-left {flex-direction:row;min-width:12%;}
+	.container-right {flex-direction:row;min-width:12%;}
+	.container-center {flex-direction:row;}
+	.container-cl {flex-direction:row;width:25%;}
+	.container-desc {flex-direction:row;width:75%;}
+	.container-table {display:flex;}
+	.container-group {display:flex;margin:10px 0 0 0;}
+	.container-col {flex-direction:col};
 <div id="article" />
 </body>
 </html>
